@@ -17,8 +17,8 @@ public class MotionHandler extends Handler
 
     public static final int DEFAULT_START_NUMBER = 10;
     public static final int MINIMUM_NUMBER = 0;
-    public static final int START_NUMBER = 1;
-    public static final int UPDATE_NUMBER = 2;
+    public static final int MESSAGE_START_NUMBER = 1;
+    public static final int MESSAGE_UPDATE_NUMBER = 2;
     public static final int TIME_FOR_ONE_NUMBER_MS = 1000;
     private RelativeTextView mNumberView;
     private RelativeLayout mParent;
@@ -53,7 +53,7 @@ public class MotionHandler extends Handler
     {
         switch (msg.what)
         {
-            case START_NUMBER:
+            case MESSAGE_START_NUMBER:
                 updateNumberView();
                 makeNumberVisible();
                 moveNumberTo(0);
@@ -61,10 +61,10 @@ public class MotionHandler extends Handler
                 animation.setDuration(TIME_FOR_ONE_NUMBER_MS);
                 animation.setFillAfter(true);
                 mNumberView.startAnimation(animation);
-                msg = obtainMessage(UPDATE_NUMBER);
+                msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
                 sendMessageDelayed(msg, TIME_FOR_ONE_NUMBER_MS);
                 break;
-            case UPDATE_NUMBER:
+            case MESSAGE_UPDATE_NUMBER:
                 hideNumber();
                 decrementNumber();
                 if (mCurrentNumber < MINIMUM_NUMBER)
@@ -74,7 +74,7 @@ public class MotionHandler extends Handler
                 }
                 else
                 {
-                    sendEmptyMessage(START_NUMBER);
+                    sendEmptyMessage(MESSAGE_START_NUMBER);
                 }
         }
     }

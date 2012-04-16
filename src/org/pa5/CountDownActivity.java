@@ -46,7 +46,7 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     public void onClick(View view)
     {
         view.setVisibility(View.GONE);
-        mHandler.sendEmptyMessage(MotionHandler.START_NUMBER);
+        mHandler.sendEmptyMessage(MotionHandler.MESSAGE_START_NUMBER);
     }
 
     public void countdownDone()

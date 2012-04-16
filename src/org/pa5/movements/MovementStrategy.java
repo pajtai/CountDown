@@ -1,4 +1,4 @@
-package org.pa5;
+package org.pa5.movements;
 
 public interface MovementStrategy
 {

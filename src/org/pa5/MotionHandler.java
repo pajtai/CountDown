@@ -3,6 +3,7 @@ package org.pa5;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
@@ -19,7 +20,7 @@ public class MotionHandler extends Handler
     public static final int MINIMUM_NUMBER = 0;
     public static final int MESSAGE_START_NUMBER = 1;
     public static final int MESSAGE_UPDATE_NUMBER = 2;
-    public static final int TIME_FOR_ONE_NUMBER_MS = 1000;
+    public static final int TIME_FOR_ONE_NUMBER_MS = 4000;
     private RelativeTextView mNumberView;
     private RelativeLayout mParent;
     private int mCurrentNumber;
@@ -57,9 +58,13 @@ public class MotionHandler extends Handler
                 updateNumberView();
                 makeNumberVisible();
                 moveNumberTo(0);
+                // You can use an AnimationSet to apply multiple animations
+                // Movement
                 Animation animation = new TranslateAnimation(0, mParent.getWidth(), 0, 0);
                 animation.setDuration(TIME_FOR_ONE_NUMBER_MS);
                 animation.setFillAfter(true);
+                AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+                animation.setInterpolator(interpolator);
                 mNumberView.startAnimation(animation);
                 msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
                 sendMessageDelayed(msg, TIME_FOR_ONE_NUMBER_MS);

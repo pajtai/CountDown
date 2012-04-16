@@ -22,7 +22,7 @@ public class MotionHandler extends Handler
     public static final int MINIMUM_NUMBER = 0;
     public static final int MESSAGE_START_NUMBER = 1;
     public static final int MESSAGE_UPDATE_NUMBER = 2;
-    public static final int TIME_FOR_ONE_NUMBER_MS = 1000;
+    public static final int TIME_FOR_ONE_NUMBER_MS = 3000;
     private RelativeTextView mNumberView;
     private RelativeLayout mParent;
     private int mCurrentNumber;

@@ -30,6 +30,21 @@ public class RelativeTextView
         return getParams().leftMargin;
     }
 
+    public void setLeftMargin(int leftMargin)
+    {
+        LayoutParams params = getParams();
+        int top = params.topMargin;
+        int right = params.rightMargin;
+        int bottom = params.bottomMargin;
+        params.setMargins(leftMargin, top, right, bottom);
+        mView.requestLayout();
+    }
+
+    public void setText(CharSequence string)
+    {
+        mView.setText(string);
+    }
+
     private LayoutParams getParams()
     {
         return (null == mParams) ? (LayoutParams) mView.getLayoutParams() : mParams;

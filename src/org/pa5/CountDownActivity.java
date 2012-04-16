@@ -1,5 +1,6 @@
 package org.pa5;
 
+import org.pa5.MotionHandler.CountdownListener;
 import org.pa5.movements.Linear;
 import org.pa5.movements.MovementStrategy;
 
@@ -17,16 +18,18 @@ import android.widget.TextView;
  * Each number is a TextView. The parent is a RelativeView.
  * 
  */
-public class CountDownActivity extends Activity implements OnClickListener
+public class CountDownActivity extends Activity implements OnClickListener, CountdownListener
 {
-    public final static int SPEED = 5;
+    public final static int SPEED = 20;
     private MotionHandler mHandler;
+    private View mStart;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        mStart = findViewById(R.id.start);
         createMotionHandler();
         setStartButtonClickListener();
     }
@@ -36,16 +39,22 @@ public class CountDownActivity extends Activity implements OnClickListener
         TextView theNumber = (TextView) findViewById(R.id.the_number);
         RelativeLayout parent = (RelativeLayout) findViewById(R.id.parent);
         MovementStrategy motion = new Linear(SPEED);
-        mHandler = new MotionHandler(theNumber, parent, motion);
+        mHandler = new MotionHandler(theNumber, parent, motion, this);
     }
 
     private void setStartButtonClickListener()
     {
-        findViewById(R.id.start).setOnClickListener(this);
+        mStart.setOnClickListener(this);
     }
 
     public void onClick(View view)
     {
         view.setVisibility(View.GONE);
+        mHandler.sendEmptyMessage(MotionHandler.START_NUMBER);
+    }
+
+    public void countdownDone()
+    {
+        mStart.setVisibility(View.VISIBLE);
     }
 }

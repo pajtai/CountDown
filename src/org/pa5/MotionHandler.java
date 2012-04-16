@@ -5,6 +5,8 @@ import android.os.Message;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,7 +22,7 @@ public class MotionHandler extends Handler
     public static final int MINIMUM_NUMBER = 0;
     public static final int MESSAGE_START_NUMBER = 1;
     public static final int MESSAGE_UPDATE_NUMBER = 2;
-    public static final int TIME_FOR_ONE_NUMBER_MS = 4000;
+    public static final int TIME_FOR_ONE_NUMBER_MS = 1000;
     private RelativeTextView mNumberView;
     private RelativeLayout mParent;
     private int mCurrentNumber;
@@ -58,14 +60,23 @@ public class MotionHandler extends Handler
                 updateNumberView();
                 makeNumberVisible();
                 moveNumberTo(0);
-                // You can use an AnimationSet to apply multiple animations
                 // Movement
-                Animation animation = new TranslateAnimation(0, mParent.getWidth(), 0, 0);
-                animation.setDuration(TIME_FOR_ONE_NUMBER_MS);
-                animation.setFillAfter(true);
+                Animation animation1 = new TranslateAnimation(0, mParent.getWidth() / 5, 0, 0);
+                animation1.setDuration(TIME_FOR_ONE_NUMBER_MS);
+                animation1.setStartOffset(0);
+                // Scale
+                Animation animation2 = new ScaleAnimation(1, 5, 1, 5);
+                animation2.setDuration(TIME_FOR_ONE_NUMBER_MS);
+                animation2.setStartOffset(0);
+                AnimationSet set = new AnimationSet(true);
                 AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-                animation.setInterpolator(interpolator);
-                mNumberView.startAnimation(animation);
+                set.setInterpolator(interpolator);
+                set.addAnimation(animation1);
+                set.addAnimation(animation2);
+                set.setFillEnabled(true);
+                set.setFillBefore(false);
+                set.setFillAfter(true);
+                mNumberView.startAnimation(set);
                 msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
                 sendMessageDelayed(msg, TIME_FOR_ONE_NUMBER_MS);
                 break;

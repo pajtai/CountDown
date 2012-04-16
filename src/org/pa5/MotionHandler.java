@@ -29,7 +29,6 @@ public class MotionHandler extends Handler
      * The containing parent has to be a RelativeLayout. This is because it will make updating
      * the motion handler with new functionality in the future much easier.
      * 
-     * The horizontal motion of the number is controlled using the left margin.
      */
     public MotionHandler(TextView theNumber, RelativeLayout containingParent, CountdownListener listener)
     {

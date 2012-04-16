@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 /**
  * This activity implements a graphic count down timer.
- * The timer uses a Handler to calculate and time the motion of the count down numbers. 
+ * The timer uses a Handler to calculate and time the motion of the count down numbers.
  * Each number is a TextView. The parent is a RelativeView.
  * 
  */

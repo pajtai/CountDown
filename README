@@ -1,5 +1,5 @@
 Implementation of a count down timer.
 
-The minimal functionality is done.
+The minimal functionality is done. But a TranslateAnimation would be better.
 
 The counter restarts if the device is turned.

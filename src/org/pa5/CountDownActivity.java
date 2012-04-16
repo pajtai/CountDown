@@ -1,8 +1,6 @@
 package org.pa5;
 
 import org.pa5.MotionHandler.CountdownListener;
-import org.pa5.movements.Linear;
-import org.pa5.movements.MovementStrategy;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import android.widget.TextView;
  */
 public class CountDownActivity extends Activity implements OnClickListener, CountdownListener
 {
-    public final static int SPEED = 20;
     private MotionHandler mHandler;
     private View mStart;
 
@@ -38,8 +35,7 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     {
         TextView theNumber = (TextView) findViewById(R.id.the_number);
         RelativeLayout parent = (RelativeLayout) findViewById(R.id.parent);
-        MovementStrategy motion = new Linear(SPEED);
-        mHandler = new MotionHandler(theNumber, parent, motion, this);
+        mHandler = new MotionHandler(theNumber, parent, this);
     }
 
     private void setStartButtonClickListener()

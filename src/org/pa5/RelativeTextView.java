@@ -1,5 +1,6 @@
 package org.pa5;
 
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -43,6 +44,11 @@ public class RelativeTextView
     public void setText(CharSequence string)
     {
         mView.setText(string);
+    }
+
+    public void startAnimation(Animation animation)
+    {
+        mView.startAnimation(animation);
     }
 
     private LayoutParams getParams()

@@ -1,11 +1,10 @@
 package org.pa5;
 
-import org.pa5.movements.MovementStrategy;
-
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,9 +19,8 @@ public class MotionHandler extends Handler
     public static final int MINIMUM_NUMBER = 0;
     public static final int START_NUMBER = 1;
     public static final int UPDATE_NUMBER = 2;
-    public static final int REFRESH_SPEED_MS = 250;
+    public static final int TIME_FOR_ONE_NUMBER_MS = 1000;
     private RelativeTextView mNumberView;
-    private MovementStrategy mMotion;
     private RelativeLayout mParent;
     private int mCurrentNumber;
     private CountdownListener mListener;
@@ -33,11 +31,10 @@ public class MotionHandler extends Handler
      * 
      * The horizontal motion of the number is controlled using the left margin.
      */
-    public MotionHandler(TextView theNumber, RelativeLayout containingParent, MovementStrategy movementStrategy, CountdownListener listener)
+    public MotionHandler(TextView theNumber, RelativeLayout containingParent, CountdownListener listener)
     {
         mNumberView = new RelativeTextView(theNumber);
         mCurrentNumber = DEFAULT_START_NUMBER;
-        mMotion = movementStrategy;
         mParent = containingParent;
         mListener = listener;
     }
@@ -61,36 +58,24 @@ public class MotionHandler extends Handler
                 updateNumberView();
                 makeNumberVisible();
                 moveNumberTo(0);
+                Animation animation = new TranslateAnimation(0, mParent.getWidth(), 0, 0);
+                animation.setDuration(TIME_FOR_ONE_NUMBER_MS);
+                animation.setFillAfter(true);
+                mNumberView.startAnimation(animation);
                 msg = obtainMessage(UPDATE_NUMBER);
-                sendMessageDelayed(msg, REFRESH_SPEED_MS);
+                sendMessageDelayed(msg, TIME_FOR_ONE_NUMBER_MS);
                 break;
             case UPDATE_NUMBER:
-                int oldPosition = mNumberView.leftMargin();
-                int newPosition = mMotion.newPosition(oldPosition);
-                moveNumberTo(newPosition);
-                Log.d("MOTION", "new position is: " + newPosition);
-                if (numberStillVisible())
+                hideNumber();
+                decrementNumber();
+                if (mCurrentNumber < MINIMUM_NUMBER)
                 {
-                    msg = obtainMessage(UPDATE_NUMBER);
-                    sendMessageDelayed(msg, REFRESH_SPEED_MS);
+                    mListener.countdownDone();
                 }
                 else
                 {
-                    decrementNumber();
-                    if (mCurrentNumber < MINIMUM_NUMBER)
-                    {
-                        // Reset number for future use
-                        mCurrentNumber = DEFAULT_START_NUMBER;
-                        hideNumber();
-                        mListener.countdownDone();
-                    }
-                    else
-                    {
-                        msg = obtainMessage(START_NUMBER);
-                        sendMessageDelayed(msg, REFRESH_SPEED_MS);
-                    }
+                    sendEmptyMessage(START_NUMBER);
                 }
-                break;
         }
     }
 
@@ -117,10 +102,5 @@ public class MotionHandler extends Handler
     private void hideNumber()
     {
         mNumberView.setVisibility(View.GONE);
-    }
-
-    private boolean numberStillVisible()
-    {
-        return mNumberView.leftMargin() < mParent.getWidth();
     }
 }

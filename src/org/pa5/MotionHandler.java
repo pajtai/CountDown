@@ -40,7 +40,7 @@ public class MotionHandler extends Handler
 
     /**
      * This method can be used to start the count down from a number other than the default,
-     * or to set the number to a known value at any point.
+     * or to set the number to a known value at any point, for example after the listener is fired.
      * 
      */
     public void setCurrentNumber(int currentNumber)
@@ -69,6 +69,7 @@ public class MotionHandler extends Handler
                 decrementNumber();
                 if (mCurrentNumber < MINIMUM_NUMBER)
                 {
+                    setCurrentNumber(DEFAULT_START_NUMBER);
                     mListener.countdownDone();
                 }
                 else

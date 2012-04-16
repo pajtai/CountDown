@@ -23,7 +23,7 @@ public class MotionHandler extends Handler
     public static final int MESSAGE_START_NUMBER = 1;
     public static final int MESSAGE_UPDATE_NUMBER = 2;
     public static final int TIME_FOR_ONE_NUMBER_MS = 3000;
-    private RelativeTextView mNumberView;
+    private TextView mNumberView;
     private RelativeLayout mParent;
     private int mCurrentNumber;
     private CountdownListener mListener;
@@ -35,7 +35,7 @@ public class MotionHandler extends Handler
      */
     public MotionHandler(TextView theNumber, RelativeLayout containingParent, CountdownListener listener)
     {
-        mNumberView = new RelativeTextView(theNumber);
+        mNumberView = theNumber;
         mCurrentNumber = DEFAULT_START_NUMBER;
         mParent = containingParent;
         mListener = listener;
@@ -59,7 +59,6 @@ public class MotionHandler extends Handler
             case MESSAGE_START_NUMBER:
                 updateNumberView();
                 makeNumberVisible();
-                moveNumberTo(0);
                 // Movement
                 Animation animation1 = new TranslateAnimation(0, mParent.getWidth() / 5, 0, 0);
                 animation1.setDuration(TIME_FOR_ONE_NUMBER_MS);
@@ -103,11 +102,6 @@ public class MotionHandler extends Handler
     private void decrementNumber()
     {
         --mCurrentNumber;
-    }
-
-    public void moveNumberTo(int leftMargin)
-    {
-        mNumberView.setLeftMargin(leftMargin);
     }
 
     private void makeNumberVisible()

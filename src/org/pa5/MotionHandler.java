@@ -3,12 +3,7 @@ package org.pa5;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MotionHandler extends Handler
@@ -22,22 +17,18 @@ public class MotionHandler extends Handler
     public static final int MINIMUM_NUMBER = 0;
     public static final int MESSAGE_START_NUMBER = 1;
     public static final int MESSAGE_UPDATE_NUMBER = 2;
-    public static final int TIME_FOR_ONE_NUMBER_MS = 3000;
     private TextView mNumberView;
-    private RelativeLayout mParent;
+    private AnimationSet mAnimationSet;
+    private int mTimeForOneNumberMS;
     private int mCurrentNumber;
     private CountdownListener mListener;
 
-    /**
-     * The containing parent has to be a RelativeLayout. This is because it will make updating
-     * the motion handler with new functionality in the future much easier.
-     * 
-     */
-    public MotionHandler(TextView theNumber, RelativeLayout containingParent, CountdownListener listener)
+    public MotionHandler(TextView theNumber, AnimationSet set, int timeForOneNumberMs, CountdownListener listener)
     {
         mNumberView = theNumber;
+        mAnimationSet = set;
+        mTimeForOneNumberMS = timeForOneNumberMs;
         mCurrentNumber = DEFAULT_START_NUMBER;
-        mParent = containingParent;
         mListener = listener;
     }
 
@@ -59,25 +50,9 @@ public class MotionHandler extends Handler
             case MESSAGE_START_NUMBER:
                 updateNumberView();
                 makeNumberVisible();
-                // Movement
-                Animation animation1 = new TranslateAnimation(0, mParent.getWidth() / 5, 0, 0);
-                animation1.setDuration(TIME_FOR_ONE_NUMBER_MS);
-                animation1.setStartOffset(0);
-                // Scale
-                Animation animation2 = new ScaleAnimation(1, 5, 1, 5);
-                animation2.setDuration(TIME_FOR_ONE_NUMBER_MS);
-                animation2.setStartOffset(0);
-                AnimationSet set = new AnimationSet(true);
-                AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-                set.setInterpolator(interpolator);
-                set.addAnimation(animation1);
-                set.addAnimation(animation2);
-                set.setFillEnabled(true);
-                set.setFillBefore(false);
-                set.setFillAfter(true);
-                mNumberView.startAnimation(set);
+                mNumberView.startAnimation(mAnimationSet);
                 msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
-                sendMessageDelayed(msg, TIME_FOR_ONE_NUMBER_MS);
+                sendMessageDelayed(msg, mTimeForOneNumberMS);
                 break;
             case MESSAGE_UPDATE_NUMBER:
                 hideNumber();

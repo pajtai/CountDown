@@ -6,10 +6,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
@@ -64,15 +63,11 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
         Animation animation4 = new ScaleAnimation(1, 0.5f, 1, 0.5f);
         animation4.setDuration(TIME_FOR_ONE_NUMBER_MS / 2);
         animation4.setStartOffset(TIME_FOR_ONE_NUMBER_MS / 2);
-        // Interpolators
-        AccelerateInterpolator accelerate = new AccelerateInterpolator();
-        DecelerateInterpolator decelerate = new DecelerateInterpolator();
+        // Interpolator
+        AccelerateDecelerateInterpolator ad = new AccelerateDecelerateInterpolator();
         // Set interpolators
-        animation1.setInterpolator(accelerate);
-        animation2.setInterpolator(accelerate);
-        animation3.setInterpolator(decelerate);
-        animation4.setInterpolator(decelerate);
-        AnimationSet set = new AnimationSet(false);
+        AnimationSet set = new AnimationSet(true);
+        set.setInterpolator(ad);
         set.addAnimation(animation1);
         set.addAnimation(animation2);
         set.addAnimation(animation3);

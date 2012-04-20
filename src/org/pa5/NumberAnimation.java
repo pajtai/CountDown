@@ -24,8 +24,7 @@ public class NumberAnimation extends Animation
     protected void applyTransformation(float interpolatedTime, Transformation t)
     {
         double time = 2 * Math.PI * interpolatedTime;
-        float currentScale = (float) (mScaling * (1 - Math.cos(time)));
-        currentScale = (currentScale < MINIMUM) ? MINIMUM : currentScale;
+        float currentScale = (float) (mScaling * (1 - Math.cos(time))) + MINIMUM;
         Matrix matrix = t.getMatrix();
         matrix.preScale(currentScale, currentScale);
         matrix.postTranslate(mHorizontal * interpolatedTime, 0);

@@ -23,7 +23,10 @@ public class NumberAnimation extends Animation
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t)
     {
+        // The scaling uses a Cycloid - http://mathworld.wolfram.com/Cycloid.html
+        // Cycloids have a period of 2 pi, so we scale the time accordingly
         double time = 2 * Math.PI * interpolatedTime;
+        // Now apply the y parameter of the Cycloid function
         float currentScale = (float) (mScaling * (1 - Math.cos(time))) + MINIMUM;
         Matrix matrix = t.getMatrix();
         matrix.preScale(currentScale, currentScale);

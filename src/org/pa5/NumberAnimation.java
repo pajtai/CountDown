@@ -5,9 +5,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 /**
- * This class hasn't been attached to the project yet. It will be a custom animation that handles number movement and size.
- * 
- * @author Peter
+ * A custom animation to move and scale the numbers.
  * 
  */
 public class NumberAnimation extends Animation

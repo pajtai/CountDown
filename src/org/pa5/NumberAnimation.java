@@ -12,21 +12,24 @@ import android.view.animation.Transformation;
  */
 public class NumberAnimation extends Animation
 {
-    final public static float BEGINNING = 0f;
-    final public static float ENDING = 1f;
+    final public static float MINIMUM = 3;
     private int mHorizontal;
-    private int mVertical;
+    private int mScaling;
 
-    public NumberAnimation(int horizontalMovement, int verticalMovement)
+    public NumberAnimation(int horizontalMovement, int scaling)
     {
         mHorizontal = horizontalMovement;
-        mVertical = verticalMovement;
+        mScaling = scaling;
     }
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t)
     {
+        double time = 2 * Math.PI * interpolatedTime;
+        float currentScale = (float) (mScaling * (1 - Math.cos(time)));
+        currentScale = (currentScale < MINIMUM) ? MINIMUM : currentScale;
         Matrix matrix = t.getMatrix();
-        matrix.postTranslate(mHorizontal * interpolatedTime, mVertical * interpolatedTime);
+        matrix.preScale(currentScale, currentScale);
+        matrix.postTranslate(mHorizontal * interpolatedTime, 0);
     }
 }

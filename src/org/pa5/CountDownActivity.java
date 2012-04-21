@@ -1,8 +1,10 @@
 package org.pa5;
 
 import org.pa5.MotionHandler.CountdownListener;
+import org.pa5.MotionHandler.HandlerTimes;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,17 +21,27 @@ import android.widget.TextView;
  */
 public class CountDownActivity extends Activity implements OnClickListener, CountdownListener
 {
+    public static final int TIME_FOR_ONE_NUMBER_MS = 3000;
+    public static final String COUNTDOWN_SAVE = "Countdown save";
+    public static final String GOING = "Going";
+    public static final String STOPPED_AT = "Stopped at";
+    public static final String NEXT_AT = "Next at";
     private MotionHandler mHandler;
     private View mStart;
-    public static final int TIME_FOR_ONE_NUMBER_MS = 3000;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        loadStateOfCountDown();
         setContentView(R.layout.main);
         mStart = findViewById(R.id.start);
         setStartButtonClickListener();
+    }
+
+    private void loadStateOfCountDown()
+    {
+        // TODO Auto-generated method stub
     }
 
     @Override
@@ -82,5 +94,33 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     public void countdownDone()
     {
         mStart.setVisibility(View.VISIBLE);
+    }
+
+    // This is the method that gets called before the activity is taken off line, so
+    // we save everything here, so it can be restarted seamlessly
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        saveStateOfCountDown();
+    }
+
+    private void saveStateOfCountDown()
+    {
+        HandlerTimes times = mHandler.onPause();
+        SharedPreferences settings = getSharedPreferences(COUNTDOWN_SAVE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        if (null == times)
+        {
+            editor.putBoolean(GOING, false);
+        }
+        else
+        {
+            // Save the state of the count down if it is going
+            editor.putBoolean(GOING, true);
+            editor.putLong(STOPPED_AT, times.stoppedAt);
+            editor.putLong(NEXT_AT, times.nextAt);
+        }
+        editor.commit();
     }
 }

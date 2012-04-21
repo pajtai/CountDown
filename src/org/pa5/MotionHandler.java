@@ -2,6 +2,7 @@ package org.pa5;
 
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.animation.AnimationSet;
 import android.widget.TextView;
@@ -13,6 +14,18 @@ public class MotionHandler extends Handler
         public void countdownDone();
     }
 
+    public static class HandlerTimes
+    {
+        public HandlerTimes(long stopTime, long nextTime)
+        {
+            stoppedAt = stopTime;
+            nextAt = nextTime;
+        }
+
+        public long stoppedAt;
+        public long nextAt;
+    }
+
     public static final int DEFAULT_START_NUMBER = 10;
     public static final int MINIMUM_NUMBER = 0;
     public static final int MESSAGE_START_NUMBER = 1;
@@ -22,6 +35,7 @@ public class MotionHandler extends Handler
     private int mTimeForOneNumberMS;
     private int mCurrentNumber;
     private CountdownListener mListener;
+    private Message mMessage;
 
     public MotionHandler(TextView theNumber, AnimationSet set, int timeForOneNumberMs, CountdownListener listener)
     {
@@ -30,6 +44,18 @@ public class MotionHandler extends Handler
         mTimeForOneNumberMS = timeForOneNumberMs;
         mCurrentNumber = DEFAULT_START_NUMBER;
         mListener = listener;
+    }
+
+    public HandlerTimes onPause()
+    {
+        HandlerTimes times = null;
+        if (null != mMessage)
+        {
+            // Messages use uptimeMillis as their timestamp
+            times = new HandlerTimes(SystemClock.uptimeMillis(), mMessage.getWhen());
+            this.removeMessages(MESSAGE_UPDATE_NUMBER);
+        }
+        return times;
     }
 
     /**
@@ -51,7 +77,7 @@ public class MotionHandler extends Handler
                 updateNumberView();
                 makeNumberVisible();
                 mNumberView.startAnimation(mAnimationSet);
-                msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
+                mMessage = msg = obtainMessage(MESSAGE_UPDATE_NUMBER);
                 sendMessageDelayed(msg, mTimeForOneNumberMS);
                 break;
             case MESSAGE_UPDATE_NUMBER:

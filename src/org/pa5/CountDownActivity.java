@@ -26,6 +26,7 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     public static final String GOING = "Going";
     public static final String STOPPED_AT = "Stopped at";
     public static final String NEXT_AT = "Next at";
+    public static final String CURRENT = "Current number";
     private MotionHandler mHandler;
     private View mStart;
 
@@ -33,7 +34,6 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        loadStateOfCountDown();
         setContentView(R.layout.main);
         mStart = findViewById(R.id.start);
         setStartButtonClickListener();
@@ -41,7 +41,25 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
 
     private void loadStateOfCountDown()
     {
-        // TODO Auto-generated method stub
+        SharedPreferences timePrefs = getSharedPreferences(COUNTDOWN_SAVE, 0);
+        if (timePrefs.getBoolean(GOING, false))
+        {
+            long stopped = timePrefs.getLong(STOPPED_AT, 0);
+            long next = timePrefs.getLong(NEXT_AT, 0);
+            if (0 != stopped && 0 != next)
+                restartCountdown(stopped, next, timePrefs.getInt(CURRENT, 0));
+        }
+    }
+
+    /**
+     * Stopped and next are in milliseconds.
+     */
+    private void restartCountdown(long stopped, long next, int current)
+    {
+        // TODO 0 - restart at appropriate point in time / location on screen
+        // for now let's restart from the left and don't worry about how long the state's been saved
+        mHandler.setCurrentNumber(current);
+        beginCountDown(mStart);
     }
 
     @Override
@@ -52,6 +70,7 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
         {
             // We have to create the motion handler here, since we need to be able to access the width of the parent
             createMotionHandler();
+            loadStateOfCountDown();
         }
     }
 
@@ -87,6 +106,13 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
 
     public void onClick(View view)
     {
+        // If we're clicking on the count down we want to start from the top, not from any sort of saved state
+        mHandler.setCurrentNumber(MotionHandler.DEFAULT_START_NUMBER);
+        beginCountDown(view);
+    }
+
+    public void beginCountDown(View view)
+    {
         view.setVisibility(View.GONE);
         mHandler.sendEmptyMessage(MotionHandler.MESSAGE_START_NUMBER);
     }
@@ -108,8 +134,8 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
     private void saveStateOfCountDown()
     {
         HandlerTimes times = mHandler.onPause();
-        SharedPreferences settings = getSharedPreferences(COUNTDOWN_SAVE, 0);
-        SharedPreferences.Editor editor = settings.edit();
+        SharedPreferences timePrefs = getSharedPreferences(COUNTDOWN_SAVE, 0);
+        SharedPreferences.Editor editor = timePrefs.edit();
         if (null == times)
         {
             editor.putBoolean(GOING, false);
@@ -120,6 +146,7 @@ public class CountDownActivity extends Activity implements OnClickListener, Coun
             editor.putBoolean(GOING, true);
             editor.putLong(STOPPED_AT, times.stoppedAt);
             editor.putLong(NEXT_AT, times.nextAt);
+            editor.putInt(CURRENT, times.currentNumber);
         }
         editor.commit();
     }

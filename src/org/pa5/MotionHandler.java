@@ -16,14 +16,16 @@ public class MotionHandler extends Handler
 
     public static class HandlerTimes
     {
-        public HandlerTimes(long stopTime, long nextTime)
+        public HandlerTimes(long stopTime, long nextTime, int current)
         {
             stoppedAt = stopTime;
             nextAt = nextTime;
+            currentNumber = current;
         }
 
         public long stoppedAt;
         public long nextAt;
+        public int currentNumber;
     }
 
     public static final int DEFAULT_START_NUMBER = 10;
@@ -52,7 +54,7 @@ public class MotionHandler extends Handler
         if (null != mMessage)
         {
             // Messages use uptimeMillis as their timestamp
-            times = new HandlerTimes(SystemClock.uptimeMillis(), mMessage.getWhen());
+            times = new HandlerTimes(SystemClock.uptimeMillis(), mMessage.getWhen(), mCurrentNumber);
             this.removeMessages(MESSAGE_UPDATE_NUMBER);
         }
         return times;
